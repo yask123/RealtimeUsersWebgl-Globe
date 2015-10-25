@@ -140,7 +140,7 @@
         document.getElementById('count').innerHTML=l/3;
         document.getElementById('lat').innerHTML=resp[l-3];
         document.getElementById('long').innerHTML=resp[l-2];
-        document.getElementById('refer').innerHTML= || "Can't detect";
+        document.getElementById('refer').innerHTML=document.referrer || "Can't detect";
 
 
         console.log("Latest value "+resp[l-2]);

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en_US">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Realtime Users Globe</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <meta name="description" content="A webgl earth shows users logging in realtime.">
+  <style>
+    .error {
+      width:200px;
+      height:20px;
+      height:auto;
+      position:absolute;
+      left:50%;
+      margin-left:-100px;
+      bottom:10px;
+      background-color: #383838;
+      color: #F0F0F0;
+      font-family: Calibri;
+      font-size: 20px;
+      padding:10px;
+      text-align:center;
+      border-radius: 2px;
+      -webkit-box-shadow: 0px 0px 24px -1px rgba(56, 56, 56, 1);
+      -moz-box-shadow: 0px 0px 24px -1px rgba(56, 56, 56, 1);
+      box-shadow: 0px 0px 24px -1px rgba(56, 56, 56, 1);
+    }
+    body {
+      padding: 0;
+      margin: 0;
+      background: black;
+    }
+
+  </style>
+</head>
+<body>
+  <main>
+    <div id='globe'></div>
+    <div class='error' style='display:none'>New user logged in </div>
+    <h2 style="color:white;position:absolute;margin-left: 22px;">Total views : <span id="count"></span></h2>
+  </main>
+
+</script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.min.js'></script>
+<script src="bower_components/appbase-js/browser/appbase.js"></script>
+<script src='globe.js'></script>
+
+<script>
+  var appbase = new Appbase({
+    url: 'https://scalr.api.appbase.io',
+    appname: 'createnewtestapp01',
+    username: 'RIvfxo1u1',
+    password: 'dee8ee52-8b75-4b5b-be4f-9df3c364f59f'
+  });
+
+  var div = document.getElementById('globe');
+  var urls = {
+    earth: 'img/world.jpg',
+    bump: 'img/bump.jpg',
+    specular: 'img/specular.jpg',
+  }
+    // create a globe
+    var globe = new Globe(div, urls);
+
+    // start it
+    globe.init();
+
+    var jsonObject = {
+      "data":[]
+    }
+    get_data();  
+    function get_data()
+    {
+    // Connect to appbase 
+    var appbase = new Appbase({
+      url: 'https://scalr.api.appbase.io',
+      appname: 'createnewtestapp01',
+      username: 'RIvfxo1u1',
+      password: 'dee8ee52-8b75-4b5b-be4f-9df3c364f59f'
+    });
+
+    // Stream data
+    stream_data();
+  }
+  var x = 0;
+  function stream_data()
+  {
+
+    appbase.readStream({
+      type: 'people',
+      id:'1',
+    }).on('data', function(response) {
+
+      console.log(response._source.data)
+      jsonObject['data']= response._source.data;
+      x+=1;
+      start_globe(response._source.data)
+
+    }).on('error', function(error) {
+      console.log(error)
+    });
+    //start_globe();
+  }
+
+  function start_globe(resp)
+  {
+
+      // Populate with old data
+      if (x === 1)
+      {
+        console.log('current data'+jsonObject['data']);
+        var len = jsonObject['data'].length;
+        document.getElementById('count').innerHTML=len/3;
+        console.log('current data length '+len)
+        for(var i=0;i<=len;i=i+3){
+          var data = {
+            color: '#2962FF',
+            size: Math.random() * 100,
+            lat: jsonObject['data'][i],
+            lon: jsonObject['data'][i+1],
+            size: 5
+          };
+          globe.addLevitatingBlock(data);
+        }
+      }
+      else
+      {
+        // Use new data
+        $('.error').fadeIn(400).delay(3000).fadeOut(400);
+        var l = resp.length;
+        document.getElementById('count').innerHTML=l/3;
+        console.log("Latest value "+resp[l-2]);
+        var drawRandomLevitatingBlock = function() {
+          var data = {
+            color: '#'+Math.floor(Math.random()*16777215).toString(16),
+            size: Math.random() * 100,
+            lat: parseInt(resp[l-3]),
+            lon: parseInt(resp[l-2]),
+            size: 5
+          };
+          globe.addLevitatingBlock(data);
+          // center the globe to the position
+          globe.center(data);
+
+        }
+        drawRandomLevitatingBlock();
+      }
+    }
+    setTimeout(send_current_data,1000);
+    function send_current_data()
+    {
+      var latitude=0;
+      var longitude=0;
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+          console.log("Geolocation is not supported by this browser.");
+        }
+      }
+      getLocation();
+      function showPosition(position) {
+        latitude =  position.coords.latitude ;
+        longitude =  position.coords.longitude; 
+        setTimeout(add_data,2000);
+      }
+
+      function add_data()
+      {
+        jsonObject['data'] = jsonObject['data'].concat([latitude,longitude,5]);
+        send_data();
+      }
+      function send_data(){
+        appbase.index({
+          type: 'people',
+          id: '1',
+          body: jsonObject
+        }).on('data', function(response) {
+          console.log(response);
+        }).on('error', function(error) {
+          console.log(error);
+        });
+      }
+    }
+
+
+    
+
+  </script>
+</body>
+</html>

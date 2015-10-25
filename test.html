@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Test Page</title>
+	<script src="bower_components/appbase-js/browser/appbase.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+
+		var appbase = new Appbase({
+			url: 'https://scalr.api.appbase.io',
+			appname: 'createnewtestapp01',
+			username: 'RIvfxo1u1',
+			password: 'dee8ee52-8b75-4b5b-be4f-9df3c364f59f'
+		});
+		var jsonObject = {
+			"data":[]
+		}
+
+		var latitude=0;
+		var longitude=0;
+		function getLocation() {
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(showPosition);
+			} else {
+				console.log("Geolocation is not supported by this browser.");
+			}
+		}
+		getLocation();
+		function showPosition(position) {
+			latitude =  position.coords.latitude ;
+			longitude =  position.coords.longitude; 
+			get_data();
+		}
+		//Get current count
+		function get_data()
+		{
+			appbase.readStream({
+				type: 'people',
+				id:'1',
+			}).on('data', function(response) {
+				console.log(response._source.data)
+				jsonObject['data']= response._source.data;
+			}).on('error', function(error) {
+				console.log(error)
+			});
+			setTimeout(add_data, 3000);
+		}
+
+		function add_data()
+		{
+			jsonObject['data'] = jsonObject['data'].concat([latitude,longitude,5]);
+			send_data();
+		}
+		function send_data(){
+			appbase.index({
+				type: 'people',
+				id: '1',
+				body: jsonObject
+			}).on('data', function(response) {
+				console.log(response);
+			}).on('error', function(error) {
+				console.log(error);
+			});
+		}
+
+	</script>
+</body>
+
+</html>

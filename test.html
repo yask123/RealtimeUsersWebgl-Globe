@@ -8,7 +8,6 @@
 </head>
 <body>
 	<script type="text/javascript">
-
 		var appbase = new Appbase({
 			url: 'https://scalr.api.appbase.io',
 			appname: 'createnewtestapp01',
@@ -18,7 +17,6 @@
 		var jsonObject = {
 			"data":[]
 		}
-
 		var latitude=0;
 		var longitude=0;
 		function getLocation() {
@@ -43,12 +41,13 @@
 			}).on('data', function(response) {
 				console.log(response._source.data)
 				jsonObject['data']= response._source.data;
+
 			}).on('error', function(error) {
 				console.log(error)
 			});
-			setTimeout(add_data, 3000);
+			//setTimeout(add_data, 3000);
+			setTimeout(add_data,2000);
 		}
-
 		function add_data()
 		{
 			jsonObject['data'] = jsonObject['data'].concat([latitude,longitude,5]);
@@ -65,7 +64,6 @@
 				console.log(error);
 			});
 		}
-
 	</script>
 </body>
 

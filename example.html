@@ -100,18 +100,18 @@
     }).on('error', function(error) {
       console.log(error)
     });
-    setTimeout(start_globe, 3000);
+    //start_globe();
   }
 
   function start_globe(resp)
   {
 
-
       // Populate with old data
       if (x === 1)
       {
-        console.log(jsonObject['data']);
+        console.log('current data'+jsonObject['data']);
         var len = jsonObject['data'].length;
+        console.log('current data length '+len)
         for(var i=0;i<=len;i=i+3){
           var data = {
             color: '#'+Math.floor(Math.random()*16777215).toString(16),
@@ -144,9 +144,46 @@
         }
         drawRandomLevitatingBlock();
       }
-
-      
     }
+    setTimeout(send_current_data,1000);
+    function send_current_data()
+    {
+      var latitude=0;
+      var longitude=0;
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+          console.log("Geolocation is not supported by this browser.");
+        }
+      }
+      getLocation();
+      function showPosition(position) {
+        latitude =  position.coords.latitude ;
+        longitude =  position.coords.longitude; 
+        setTimeout(add_data,2000);
+      }
+
+      function add_data()
+      {
+        jsonObject['data'] = jsonObject['data'].concat([latitude,longitude,5]);
+        send_data();
+      }
+      function send_data(){
+        appbase.index({
+          type: 'people',
+          id: '1',
+          body: jsonObject
+        }).on('data', function(response) {
+          console.log(response);
+        }).on('error', function(error) {
+          console.log(error);
+        });
+      }
+    }
+
+
+    
 
   </script>
 </body>

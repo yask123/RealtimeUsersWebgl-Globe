@@ -40,6 +40,12 @@
     <div id='globe'></div>
     <div class='error' style='display:none'>New user logged in </div>
     <h2 style="color:white;position:absolute;margin-left: 22px;">Total views : <span id="count"></span></h2>
+    <div style="color:white;position:absolute;margin-left: 22px;margin-top: 48px">
+    <h3>Logs<br> --------------------------</h3> 
+    <p> Last user details</p>
+    <p> Latitude : <span id="lat"></span> </p>
+    <p> Longitude:<span id="long"></span> </p>
+    </div>
   </main>
 
 </script>
@@ -76,9 +82,9 @@
     // Connect to appbase 
     var appbase = new Appbase({
       url: 'https://scalr.api.appbase.io',
-     appname: 'realtime',
-    username: 'Ng05erVOQ',
-    password: '392a6ba6-4ab8-4e6a-a27f-96c0fa49fe10'
+      appname: 'realtime',
+      username: 'Ng05erVOQ',
+      password: '392a6ba6-4ab8-4e6a-a27f-96c0fa49fe10'
     });
 
     // Stream data
@@ -131,6 +137,9 @@
         $('.error').fadeIn(400).delay(3000).fadeOut(400);
         var l = resp.length;
         document.getElementById('count').innerHTML=l/3;
+        document.getElementById('lat').innerHTML=resp[l-3];
+        document.getElementById('long').innerHTML=resp[l-2];
+
         console.log("Latest value "+resp[l-2]);
         var drawRandomLevitatingBlock = function() {
           var data = {

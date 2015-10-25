@@ -38,7 +38,7 @@
 <body>
   <main>
     <div id='globe'></div>
-    <div class='error' style='display:none'>New user logged in </div>
+    <div class='error' style='display:none'>New user logged in From <span id="cont"></span> </div>
     <h2 style="color:white;position:absolute;margin-left: 22px;">Total views : <span id="count"></span></h2>
     <div style="color:white;position:absolute;margin-left: 22px;margin-top: 48px">
       <h3>Logs<br> --------------------------</h3> 
@@ -149,6 +149,7 @@
         document.getElementById('refer').innerHTML=document.referrer || "Can't detect";
         document.getElementById('country').innerHTML=country;
         document.getElementById('isp').innerHTML=isp;
+        document.getElementById('cont').innerHTML=country;
 
 
         console.log("Latest value "+resp[l-2]);

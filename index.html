@@ -45,6 +45,7 @@
     <p> Last user details</p>
     <p> Latitude : <span id="lat"></span> </p>
     <p> Longitude:<span id="long"></span> </p>
+    <p> Referrer: <span id="refer"></span></p>
     </div>
   </main>
 
@@ -139,6 +140,8 @@
         document.getElementById('count').innerHTML=l/3;
         document.getElementById('lat').innerHTML=resp[l-3];
         document.getElementById('long').innerHTML=resp[l-2];
+        document.getElementById('refer').innerHTML= || "Can't detect";
+
 
         console.log("Latest value "+resp[l-2]);
         var drawRandomLevitatingBlock = function() {

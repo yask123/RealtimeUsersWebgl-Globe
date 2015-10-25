@@ -8,6 +8,19 @@ A webgl earth shows users logging in realtime.
 
 Built with [Appbase.io](https://appbase.io/)
 
+## Usage
+
+``` bash
+$ git clone https://github.com/yask123/RealtimeUsersWebgl-Globe.git 
+
+$ cd RealtimeUsersWebgl-Globe
+
+$ python -m SimpleHTTPServer 8000
+
+```
+
+[Visit] (http:0.0.0.0:8000) 
+
 ## Dependencies
 
 - Appbase.io

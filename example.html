@@ -113,11 +113,11 @@
         var len = jsonObject['data'].length/3;
         for(var i=0;i<len;i++){
           var data = {
-            color: '#'+Math.floor(Math.random()*16777215).toString(16),
+            color: '#000000',
             size: Math.random() * 100,
             lat: jsonObject['data'][0],
             lon: jsonObject['data'][1],
-            size: 10
+            size: 1
           };
           globe.addLevitatingBlock(data);
         }
@@ -134,7 +134,7 @@
             size: Math.random() * 100,
             lat: parseInt(resp[l-3]),
             lon: parseInt(resp[l-2]),
-            size: 10
+            size: 1
           };
 
           // center the globe to the position
